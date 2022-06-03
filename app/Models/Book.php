@@ -6,9 +6,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $description
+ * @property float $price
+ * @property string $date_of_creation
+ * @property string $ISBN
+ * @property int|null $created_at
+ * @property int|null $updated_at
+ */
 class Book extends Model
 {
     use HasFactory;
+
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'date_of_creation',
+        'ISBN',
+    ];
 
     public function genres(): BelongsToMany
     {
