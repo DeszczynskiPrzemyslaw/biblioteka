@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BookHelper;
+use App\Http\Requests\BookStoreRequest;
+use App\Models\Author;
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -23,17 +27,22 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookStoreRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'price' => 'required',
-            'date_of_creation' => 'required',
-            'ISBN' => 'required',
+        $book = Book::create([
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'price' => $request->get('price'),
+            'date_of_creation' => $request->get('date_of_creation'),
+            'ISBN' => BookHelper::generateISBN()
         ]);
+        $author = Author::firstOrCreate(['name' => $request->get('author')]);
+//        foreach ($request->get('genre', []) as )
+//        $genre = Genre::firstOrCreate(['name' => $request->get('genre', [])]);
+        $book->authors()->attach($author);
+//        $book->genres()->attach($genre);
 
-        return Book::create($request->all());
+        return response([$book, $author], 201);
     }
 
     /**

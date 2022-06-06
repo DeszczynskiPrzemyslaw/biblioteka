@@ -14,6 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property int|null $email_verified_at
  * @property string $password
+ * @property boolean $admin
  * @property string|null $remember_token
  * @property int|null $created_at
  * @property int|null $updated_at
@@ -31,6 +32,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'admin'
     ];
 
     /**
@@ -52,8 +54,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function isAdmin(): bool
+    {
+        if ($this->admin == true) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function books(): BelongsToMany
     {
-        return $this->belongsToMany(Book::class);
+        return $this->belongsToMany(Book::class)->withPivot('date_of_borrowing', 'date_of_return');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -13,7 +14,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        //
+        return Author::all();
     }
 
     /**
@@ -24,7 +25,9 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(['name' => ['string', 'required']]);
+
+        return Author::create($request->all());
     }
 
     /**
@@ -35,7 +38,7 @@ class AuthorController extends Controller
      */
     public function show($id)
     {
-        //
+        return Author::find($id);
     }
 
     /**
@@ -47,7 +50,10 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $author = Author::find($id);
+        $author->update($request->all());
+
+        return $author;
     }
 
     /**
@@ -58,6 +64,6 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Author::destroy($id);
     }
 }
