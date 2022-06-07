@@ -33,9 +33,6 @@ Route::controller(AuthorController::class)->group(function () {
     Route::get('/authors', 'index');
     Route::get('/authors/{id}', 'show');
 });
-Route::controller(UserController::class)->group(function () {
-    Route::get('/users', 'index');
-});
 Route::controller(GenreController::class)->group(function () {
     Route::get('/genres', 'index');
     Route::get('/genres/{id}', 'show');
@@ -45,8 +42,8 @@ Route::controller(GenreController::class)->group(function () {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::controller(BookController::class)->group(function () {
         Route::post('/books', 'store');
-        Route::put('/books/{id}', 'update');
-        Route::delete('/books/{id}', 'destroy');
+        Route::put('/books/{book}', 'update');
+        Route::delete('/books/{book}', 'destroy');
     });
     Route::controller(AuthorController::class)->group(function () {
         Route::post('/authors', 'store');
@@ -60,5 +57,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::controller(AuthController::class)->group(function () {
         Route::post('/logout', 'logout');
+    });
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index');
     });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\ResourceHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,9 +19,9 @@ class AuthorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'books' => new BookCollection($this->books()->get()),
+            $this->mergeWhen(ResourceHelper::expands('books'), [
+                'books' => new BookCollection($this->books()->get()),
+            ]),
         ];
     }
 }

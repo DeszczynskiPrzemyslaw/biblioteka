@@ -20,6 +20,7 @@ class BookController extends Controller
 
     public function store(BookStoreRequest $request)
     {
+        $this->authorize('create', Book::class);
         $book = Book::create([
             'name' => $request->get('name'),
             'description' => $request->get('description'),
@@ -44,17 +45,19 @@ class BookController extends Controller
         return new BookResource(Book::find($id));
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, Book $book)
     {
-        $book = Book::find($id);
+        $this->authorize('update', $book);
         $book->update($request->all());
 
         return new BookResource($book);
     }
 
-    public function destroy(int $id)
+    public function destroy(Book $book)
     {
-        return Book::destroy($id);
+        $this->authorize('delete', $book);
+
+        return $book->delete();
     }
 
     public function search(string $name)

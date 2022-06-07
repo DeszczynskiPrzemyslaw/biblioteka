@@ -9,63 +9,36 @@ use Illuminate\Http\Request;
 
 class GenreController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         return new GenreCollection(Genre::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+        $this->authorize('create', Genre::class);
         $request->validate(['name' => ['required', 'string']]);
 
         return new GenreResource(Genre::create($request->all()));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         return new GenreResource(Genre::find($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Genre $genre)
     {
-        $genre = Genre::find($id);
+        $this->authorize('update', Genre::class);
         $genre->update($request->all());
 
         return new GenreResource($genre);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(Genre $genre)
     {
-        return Genre::destroy($id);
+        $this->authorize('delete', Genre::class);
+
+        return $genre->delete();
     }
 }

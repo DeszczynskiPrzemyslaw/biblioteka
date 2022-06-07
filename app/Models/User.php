@@ -32,7 +32,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'admin'
+        'is_admin'
     ];
 
     /**
@@ -54,22 +54,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function isAdmin(): bool
-    {
-        if ($this->admin == true) {
-            return true;
-        }
-
-        return false;
-    }
 
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)->withPivot('date_of_borrowing', 'date_of_return');
-    }
-
-    public function borrowedBooks(): BelongsToMany
-    {
-        return $this->belongsToMany(Book::class)->withPivot('date_of_borrowing', 'date_of_return')->where(['date_of_borrowing']);
     }
 }

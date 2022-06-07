@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -25,7 +26,7 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        return response($response, 201);
+        return response($response, Response::HTTP_CREATED);
     }
 
     public function login(Request $request) {
@@ -35,22 +36,20 @@ class AuthController extends Controller
         ]);
         $user = User::firstWhere('email', $fields['email']);
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return \response([
+            return response([
                 'message' => 'Credentials does not match.'
-            ], 401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
 
-        return response($response, 201);
+        return response([
+            'user' => $user,
+            'token' => $user->createToken('myapptoken')->plainTextToken
+        ], Response::HTTP_CREATED);
     }
 
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        auth()->user()->tokens()->where(['name' => 'myapptoken'])->delete();
 
         return [
             'message' => 'Logged out'

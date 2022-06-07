@@ -35,17 +35,6 @@ class Book extends Model
     ];
 
 
-    public function isBorrowed(int $id): bool
-    {
-        $book = Book::firstWhere('id', $id);
-        if (!$book->pivot->date_of_borrowing) {
-            return true;
-        }
-
-        return false;
-    }
-
-
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class);
