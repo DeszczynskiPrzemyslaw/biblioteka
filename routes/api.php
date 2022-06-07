@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,21 +21,24 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
 });
 Route::controller(BookController::class)->group(function () {
-    Route::get('/books/search/{name}', [BookController::class, 'search']);
-    Route::get('/books/{id}', [BookController::class, 'show']);
-    Route::get('/books', [BookController::class, 'index']);
+    Route::get('/books/search/{name}', 'search');
+    Route::get('/books/{id}', 'show');
+    Route::get('/books', 'index');
 });
 Route::controller(AuthorController::class)->group(function () {
-    Route::get('/authors', [AuthorController::class, 'index']);
-    Route::get('/authors/{id}', [AuthorController::class, 'show']);
+    Route::get('/authors', 'index');
+    Route::get('/authors/{id}', 'show');
+});
+Route::controller(UserController::class)->group(function () {
+    Route::get('/users', 'index');
 });
 Route::controller(GenreController::class)->group(function () {
-    Route::get('/genres', [GenreController::class, 'index']);
-    Route::get('/genres/{id}', [GenreController::class, 'show']);
+    Route::get('/genres', 'index');
+    Route::get('/genres/{id}', 'show');
 });
 
 // Protected routes

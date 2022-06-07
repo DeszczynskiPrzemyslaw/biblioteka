@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\BookHelper;
 use App\Http\Requests\BookStoreRequest;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Genre;
@@ -11,22 +13,11 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return Book::all();
+        return new BookCollection(Book::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(BookStoreRequest $request)
     {
         $book = Book::create([
@@ -36,60 +27,38 @@ class BookController extends Controller
             'date_of_creation' => $request->get('date_of_creation'),
             'ISBN' => BookHelper::generateISBN()
         ]);
-        $author = Author::firstOrCreate(['name' => $request->get('author')]);
-//        foreach ($request->get('genre', []) as )
-//        $genre = Genre::firstOrCreate(['name' => $request->get('genre', [])]);
-        $book->authors()->attach($author);
-//        $book->genres()->attach($genre);
+        foreach ($request->get('author', []) as $value) {
+            $author = Author::firstOrCreate(['name' => $value]);
+            $book->authors()->attach($author);
+        }
+        foreach ($request->get('genre', []) as $value) {
+            $genre = Genre::firstOrCreate(['name' => $value]);
+            $book->genres()->attach($genre);
+        }
 
-        return response([$book, $author], 201);
+        return new BookResource($book);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(int $id)
     {
-        return Book::find($id);
+        return new BookResource(Book::find($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $book = Book::find($id);
         $book->update($request->all());
 
-        return $book;
+        return new BookResource($book);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         return Book::destroy($id);
     }
 
-    /**
-     * Search for a name
-     *
-     * @param  string  $name
-     * @return \Illuminate\Http\Response
-     */
-    public function search($name)
+    public function search(string $name)
     {
-        return Book::where('name', 'like', '%'.$name.'%')->get();
+        return new BookCollection(Book::where('name', 'like', '%'.$name.'%')->get());
     }
 }

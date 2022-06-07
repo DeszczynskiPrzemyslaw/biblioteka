@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class BookStoreRequest extends FormRequest
 {
@@ -28,8 +29,12 @@ class BookStoreRequest extends FormRequest
             'description' => ['required'],
             'price' => ['required'],
             'date_of_creation' => ['required'],
-            'author' => ['required'],
-//            'genre.*' => ['required']
+            'author.*' => Rule::forEach(function () {
+                return ['required'];
+            }),
+            'genre.*' => Rule::forEach(function () {
+                return ['required', 'string'];
+            })
         ];
     }
 }

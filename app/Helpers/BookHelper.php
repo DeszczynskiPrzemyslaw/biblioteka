@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+
 abstract class BookHelper
 {
     public static function generateISBN(): string
