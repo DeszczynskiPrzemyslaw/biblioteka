@@ -47,13 +47,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::controller(AuthorController::class)->group(function () {
         Route::post('/authors', 'store');
-        Route::put('/authors/{id}', 'update');
-        Route::delete('/authors/{id}', 'destroy');
+        Route::put('/authors/{author}', 'update');
+        Route::delete('/authors/{author}', 'destroy');
     });
     Route::controller(GenreController::class)->group(function () {
         Route::post('/genres', 'store');
-        Route::put('/genres/{id}', 'update');
-        Route::delete('/genres/{id}', 'destroy');
+        Route::put('/genres/{genre}', 'update');
+        Route::delete('/genres/{genre}', 'destroy');
     });
     Route::controller(AuthController::class)->group(function () {
         Route::post('/logout', 'logout');
